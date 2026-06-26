@@ -2,22 +2,21 @@ package com.hocviec.service;
 
 import com.hocviec.model.Book;
 import java.util.ArrayList;
+import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class BookService {
     
     private ArrayList<Book> books = new ArrayList<>();
 
-    public ArrayList<Book> getALl() {
+    public ArrayList<Book> getAll() {
         return books;
     }
 
-    public Book getById(Long id) {
-        for (Book book : books) {
-            if (book.getId().equals(id)) {
-                return book;
-            }
-        }
-        return null;
+    public Optional<Book> getById(Long id) {
+        return books.stream().filter(book -> book.getId().equals(id)).findFirst();
     }
 
     public void add(Book book) {
