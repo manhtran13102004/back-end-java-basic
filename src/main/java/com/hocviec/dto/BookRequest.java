@@ -1,17 +1,15 @@
-package com.hocviec.model;
+package com.hocviec.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Book {
-    private Long id;
+public class BookRequest {
+    
     private String name;
     private double price;
-    private double priceImport;
-    private LocalDate dayCreated;
+
 }
