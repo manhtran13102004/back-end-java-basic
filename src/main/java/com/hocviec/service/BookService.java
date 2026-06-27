@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
+import com.hocviec.mapper.BookMapper;
 import com.hocviec.model.Book;
 
 @Service
 public class BookService {
     
+    private final BookMapper bookMapper = new BookMapper();
     private final ArrayList<Book> books = new ArrayList<>();
 
     public ArrayList<BookResponse> getAll() {
@@ -43,10 +45,7 @@ public class BookService {
         books.stream()
 		.filter(book -> book.getId().equals(id))
 		.findFirst()
-		.ifPresent(book -> {
-			book.setName(bookRequest.getName());
-			book.setPrice(bookRequest.getPrice());
-		});
+		.ifPresent(book -> bookMapper.updateBook(book, bookRequest));
     }
 
     public void delete(Long id) {

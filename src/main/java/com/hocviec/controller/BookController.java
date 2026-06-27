@@ -19,7 +19,7 @@ import com.hocviec.service.BookService;
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
-    
+
     private final BookService bookService;
 
     public BookController(BookService bookService) {
@@ -27,29 +27,29 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<ArrayList<BookResponse>> getAllBooks() {
+    public ResponseEntity < ArrayList < BookResponse >> getAllBooks() {
         return ResponseEntity.ok(bookService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookResponse> getBookById(@PathVariable Long id) {
+    public ResponseEntity < BookResponse > getBookById(@PathVariable Long id) {
         return bookService.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Void> addBook(@RequestBody BookRequest book) {
+    public ResponseEntity < Void > addBook(@RequestBody BookRequest book) {
         bookService.add(book);
         return ResponseEntity.status(201).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateBook(@PathVariable Long id, @RequestBody BookRequest book) {
+    public ResponseEntity < Void > updateBook(@PathVariable Long id, @RequestBody BookRequest book) {
         bookService.update(id, book);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+    public ResponseEntity < Void > deleteBook(@PathVariable Long id) {
         bookService.delete(id);
         return ResponseEntity.noContent().build();
     }
