@@ -1,6 +1,7 @@
 package com.hocviec.service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,49 +11,55 @@ import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
 import com.hocviec.mapper.BookMapper;
 import com.hocviec.model.Book;
+import com.hocviec.repository.BookRepository;
 
 @Service
 public class BookService {
-    
-    private final BookMapper bookMapper = new BookMapper();
-    private final ArrayList<Book> books = new ArrayList<>();
+
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
+
+    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
+        this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
+    }
 
     public ArrayList<BookResponse> getAll() {
+
+        List<Book> books = bookRepository.findAll();
         return books.stream()
                 .map(book -> new BookResponse(book.getId(), book.getName(), book.getPrice(), book.getPriceImport(), book.getDayCreated()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Optional<BookResponse> getById(Long id) {
-        return books.stream()
-                .filter(book -> book.getId().equals(id))
-                .map(book -> new BookResponse(book.getId(), book.getName(), book.getPrice(), book.getPriceImport(), book.getDayCreated()))
-                .findFirst();
+        return bookRepository.findById(id).map(bookMapper::toBookResponse);
     }
 
-    public void add(BookRequest request) {
-        Book book = new Book();
-        book.setId((long) (books.size() + 1));
-        book.setName(request.getName());
-        book.setPrice(request.getPrice());
+    public BookResponse add(BookRequest request) {
+        Book book = bookMapper.toBookEntity(request);
         book.setDayCreated(java.time.LocalDate.now());
         book.setPriceImport(request.getPrice() * 0.5);
 
-        books.add(book);
+        Book savedBook = bookRepository.save(book);
+        return bookMapper.toBookResponse(savedBook);
     }
 
-    public void update(Long id, BookRequest bookRequest) {
-        books.stream()
-		.filter(book -> book.getId().equals(id))
-		.findFirst()
-		.ifPresent(book -> bookMapper.updateBook(book, bookRequest));
+    public BookResponse update(Long id, BookRequest bookRequest) {
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("KHÔNG TÌM THẤY ID: " + id));
+
+        Book updatedBook = bookMapper.updateBook(existingBook, bookRequest);
+
+        Book finalBook = bookRepository.save(updatedBook);
+        return bookMapper.toBookResponse(finalBook);
     }
 
     public void delete(Long id) {
-        Optional<Book> bookOptional = books.stream()
-        .filter(book -> book.getId().equals(id))
-        .findFirst();
-	    bookOptional.ifPresent(book -> books.remove(book));
+       
+       if (bookRepository.existsById(id)) {
+        bookRepository.deleteById(id);
+       }
 
     }
 }

@@ -1,13 +1,14 @@
 package com.hocviec.mapper;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
 import com.hocviec.model.Book;
-import java.util.ArrayList;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-
+@Component
 public class BookMapper {
     public BookMapper(){
 }
@@ -40,10 +41,11 @@ public class BookMapper {
 
 
 
-    public void updateBook(Book book, BookRequest bookRequest) {
+    public Book updateBook(Book book, BookRequest bookRequest) {
         book.setName(bookRequest.getName());
         book.setPrice(bookRequest.getPrice());	
 
+        return book;
     }
 
 }
