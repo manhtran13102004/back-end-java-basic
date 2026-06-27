@@ -24,15 +24,15 @@ public class BookService {
         this.bookMapper = bookMapper;
     }
 
-    public ArrayList<BookResponse> getAll() {
+    public ArrayList < BookResponse > getAll() {
 
-        List<Book> books = bookRepository.findAll();
+        List < Book > books = bookRepository.findAll();
         return books.stream()
-                .map(book -> new BookResponse(book.getId(), book.getName(), book.getPrice(), book.getPriceImport(), book.getDayCreated()))
-                .collect(Collectors.toCollection(ArrayList::new));
+            .map(book -> bookMapper.toBookResponse(book))
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public Optional<BookResponse> getById(Long id) {
+    public Optional < BookResponse > getById(Long id) {
         return bookRepository.findById(id).map(bookMapper::toBookResponse);
     }
 
@@ -47,7 +47,7 @@ public class BookService {
 
     public BookResponse update(Long id, BookRequest bookRequest) {
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("KHÔNG TÌM THẤY ID: " + id));
+            .orElseThrow(() -> new RuntimeException("KHÔNG TÌM THẤY ID: " + id));
 
         Book updatedBook = bookMapper.updateBook(existingBook, bookRequest);
 
@@ -56,10 +56,10 @@ public class BookService {
     }
 
     public void delete(Long id) {
-       
-       if (bookRepository.existsById(id)) {
-        bookRepository.deleteById(id);
-       }
 
+        if (!bookRepository.existsById(id)) {
+            throw new RuntimeException("Không thể xóa! Không tìm thấy sách ID: " + id);
+        }
+        bookRepository.deleteById(id);
     }
 }
