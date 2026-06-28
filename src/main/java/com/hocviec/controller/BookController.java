@@ -20,6 +20,8 @@ import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
 import com.hocviec.service.BookService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -43,13 +45,13 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity < Void > addBook(@RequestBody BookRequest book) {
+    public ResponseEntity < Void > addBook(@Valid @RequestBody BookRequest book) {
         bookService.add(book);
         return ResponseEntity.status(201).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity < BookResponse > updateBook(@PathVariable Long id, @RequestBody BookRequest book) {
+    public ResponseEntity < BookResponse > updateBook(@PathVariable Long id, @Valid @RequestBody BookRequest book) {
 
         return ResponseEntity.ok(bookService.update(id, book));
     }
