@@ -3,7 +3,6 @@ package com.hocviec.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -55,8 +54,10 @@ public class BookService {
         return bookPage.map(bookMapper::toBookResponse);
     }
 
-    public Optional < BookResponse > getById(Long id) {
-        return bookRepository.findById(id).map(bookMapper::toBookResponse);
+    public BookResponse getById(Long id) {
+        return bookRepository.findById(id)
+            .map(bookMapper::toBookResponse)
+            .orElseThrow(() -> new RuntimeException("KHÔNG TÌM THẤY ID: " + id));
     }
 
     public BookResponse add(BookRequest request) {
