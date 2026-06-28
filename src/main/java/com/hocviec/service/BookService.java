@@ -1,7 +1,6 @@
 package com.hocviec.service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
+import com.hocviec.exception.ErrorCode;
 import com.hocviec.mapper.BookMapper;
 import com.hocviec.model.Book;
 import com.hocviec.repository.BookRepository;
+import com.hocviec.exception.AppException;
+
 
 
 @Service
@@ -29,12 +31,12 @@ public class BookService {
         this.bookMapper = bookMapper;
     }
 
-    public ArrayList < BookResponse > getAll() {
+    public List < BookResponse > getAll() {
 
         List < Book > books = bookRepository.findAll();
         return books.stream()
-            .map(book -> bookMapper.toBookResponse(book))
-            .collect(Collectors.toCollection(ArrayList::new));
+            .map(bookMapper::toBookResponse)
+            .collect(Collectors.toList());
     }
 
     public Page<BookResponse> getAllBooksWithPagination(int page, int size, String sortBy, String direction) {
@@ -57,7 +59,7 @@ public class BookService {
     public BookResponse getById(Long id) {
         return bookRepository.findById(id)
             .map(bookMapper::toBookResponse)
-            .orElseThrow(() -> new RuntimeException("KHÔNG TÌM THẤY ID: " + id));
+            .orElseThrow(() -> new AppException(ErrorCode.BOOK_NOT_EXISTED));
     }
 
     public BookResponse add(BookRequest request) {
@@ -71,7 +73,7 @@ public class BookService {
 
     public BookResponse update(Long id, BookRequest bookRequest) {
         Book existingBook = bookRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("KHÔNG TÌM THẤY ID: " + id));
+            .orElseThrow(() -> new AppException(ErrorCode.BOOK_NOT_EXISTED));
 
         Book updatedBook = bookMapper.updateBook(existingBook, bookRequest);
 
@@ -82,7 +84,7 @@ public class BookService {
     public void delete(Long id) {
 
         if (!bookRepository.existsById(id)) {
-            throw new RuntimeException("Không thể xóa! Không tìm thấy sách ID: " + id);
+            throw new AppException(ErrorCode.BOOK_NOT_EXISTED);
         }
         bookRepository.deleteById(id);
     }
