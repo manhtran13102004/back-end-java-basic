@@ -6,9 +6,10 @@ public enum ErrorCode {
     // Định nghĩa các mã lỗi (Mã lỗi, Tin nhắn mặc định, HTTP Status tương ứng)
     INVALID_KEY(1001, "Mã lỗi không hợp lệ", HttpStatus.BAD_REQUEST),
     BOOK_NOT_EXISTED(1002, "Cuốn sách này không tồn tại trên hệ thống", HttpStatus.NOT_FOUND),
-    BOOK_NAME_INVALID(1003, "Tên sách phải từ 2 đến 100 ký tự và không được để trống", HttpStatus.BAD_REQUEST),
-    BOOK_PRICE_INVALID(1004, "Giá sách không được để trống và phải lớn hơn hoặc bằng 0", HttpStatus.BAD_REQUEST),
-    UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa được phân loại", HttpStatus.INTERNAL_SERVER_ERROR)
+    BOOK_NAME_BLANK(1003, "Tên sách không được để trống", HttpStatus.BAD_REQUEST),
+    BOOK_NAME_INVALID(1004, "Tên sách phải từ 2 đến 100 ký tự", HttpStatus.BAD_REQUEST),
+    BOOK_PRICE_NULL(1005, "Giá không được để trống", HttpStatus.BAD_REQUEST),
+    BOOK_PRICE_INVALID(1006, "Giá phải lớn hơn 0", HttpStatus.BAD_REQUEST),UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa được phân loại", HttpStatus.INTERNAL_SERVER_ERROR)
     ;
 
     private final int code;

@@ -1,36 +1,47 @@
 package com.hocviec.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.hocviec.dto.ApiResponse;
+
 @RestControllerAdvice // 🌟 1. Báo cho Spring biết đây là bộ lọc hứng lỗi toàn cục
 public class GlobalExceptionHandler {
 
     // 🔥 HÀM 1: Chuyên hứng lỗi Validation đầu vào (Mã lỗi 400)
-    @ExceptionHandler(MethodArgumentNotValidException.class) // 2. Chỉ định loại lỗi muốn bắt
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
+        // Mặc định lấy lỗi đầu tiên tìm thấy
+        String enumKey = ex.getFieldError().getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
         
-        // Duyệt qua tất cả các trường bị lỗi dữ liệu đầu vào
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-        });
-        
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST); // Trả về JSON lỗi kèm mã 400 Bad Request
+        try {
+            // Đọc chuỗi tin nhắn để ánh xạ ngược lại Enum ErrorCode
+            errorCode = ErrorCode.valueOf(enumKey);
+        } catch (IllegalArgumentException e) {
+            // Giữ nguyên INVALID_KEY nếu không ánh xạ được
+        }
+
+        ApiResponse<Object> apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build();
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
-    // 🔥 HÀM 2: Chuyên hứng lỗi Logic/Nghiệp vụ do ta tự ném (Mã lỗi 404 hoặc tùy chọn)
-    @ExceptionHandler(RuntimeException.class) // 3. Bắt các lỗi RuntimeException như "Không tìm thấy ID"
-    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
-        Map<String, String> errorDetail = new HashMap<>();
-        errorDetail.put("error", ex.getMessage()); // Bốc dòng chữ tiếng Việt bạn viết ở Service ra
+    // 🔥 HÀM 2: Chuyên Hứng lỗi AppException do ta chủ động ném ở Service
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAppException(AppException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
         
-        // Trong thực tế, lỗi tìm kiếm không thấy thường gán mã 404 NOT FOUND thay vì 500 sập nguồn
-        return new ResponseEntity<>(errorDetail, HttpStatus.NOT_FOUND); 
+        ApiResponse<Object> apiResponse = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build();
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 }

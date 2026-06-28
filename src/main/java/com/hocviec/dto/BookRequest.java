@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookRequest {
     
-    @NotBlank(message = "Tên sách không được để trống")
-    @Size(min = 2, max = 100, message = "Tên sách phải từ 2 đến 100 ký tự")
+    @NotBlank(message = "BOOK_NAME_BLANK")
+    @Size(min = 2, max = 100, message = "BOOK_NAME_INVALID")
     private String name;
     
-    @NotNull(message = "Giá không được để trống")
-    @Min(value = 0, message = "Giá phải lớn hơn 0")
+    @NotNull(message = "BOOK_PRICE_NULL")
+    @Min(value = 0, message = "BOOK_PRICE_INVALID")
     private double price;
 
 }
