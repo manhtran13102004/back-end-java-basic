@@ -5,14 +5,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.hocviec.dto.ApiResponse;
+import com.hocviec.dto.BaseResponse;
 
 @RestControllerAdvice // 🌟 1. Báo cho Spring biết đây là bộ lọc hứng lỗi toàn cục
 public class GlobalExceptionHandler {
 
     // 🔥 HÀM 1: Chuyên hứng lỗi Validation đầu vào (Mã lỗi 400)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<BaseResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
         // Mặc định lấy lỗi đầu tiên tìm thấy
         String enumKey = ex.getFieldError().getDefaultMessage();
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
             // Giữ nguyên INVALID_KEY nếu không ánh xạ được
         }
 
-        ApiResponse<Object> apiResponse = ApiResponse.builder()
+        BaseResponse<Object> apiResponse = BaseResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
@@ -34,10 +34,10 @@ public class GlobalExceptionHandler {
 
     // 🔥 HÀM 2: Chuyên Hứng lỗi AppException do ta chủ động ném ở Service
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<ApiResponse<Object>> handleAppException(AppException ex) {
+    public ResponseEntity<BaseResponse<Object>> handleAppException(AppException ex) {
         ErrorCode errorCode = ex.getErrorCode();
         
-        ApiResponse<Object> apiResponse = ApiResponse.builder()
+        BaseResponse<Object> apiResponse = BaseResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();

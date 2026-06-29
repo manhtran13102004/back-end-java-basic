@@ -14,16 +14,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.hocviec.dto.ApiResponse;
 
+import com.hocviec.dto.BaseResponse;
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
 import com.hocviec.service.BookService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/books")
+@Tag(name = "Quản Lý Sách", description = "Các API cung cấp các thao tác Thêm, Sửa, Xóa, Lấy danh sách Sách")
 public class BookController {
 
     private final BookService bookService;
@@ -33,9 +39,17 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity < ApiResponse <List < BookResponse >>> getAllBooks() {
+    @Operation(
+        summary = "Lấy toàn bộ danh sách sách",
+        description = "API này sẽ truy vấn vào database để lôi ra toàn bộ các cuốn sách đang có trên hệ thống."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Tìm kiếm thành công, trả về danh sách sách"),
+        @ApiResponse(responseCode = "500", description = "Lỗi hệ thống chạy ngầm hoặc mất kết nối DB")
+    })
+    public ResponseEntity < BaseResponse < List < BookResponse >>> getAllBooks() {
 
-        ApiResponse <List <BookResponse>> apiResponse = ApiResponse.<List <BookResponse>>builder()
+        BaseResponse < List < BookResponse >> apiResponse = BaseResponse. < List < BookResponse >> builder()
             .result(bookService.getAll())
             .build();
 
@@ -43,58 +57,66 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity < ApiResponse < BookResponse >> getBookById(@PathVariable Long id) {
-        ApiResponse <BookResponse> apiResponse = ApiResponse.<BookResponse>builder()
+    public ResponseEntity < BaseResponse < BookResponse >> getBookById(@PathVariable Long id) {
+        BaseResponse < BookResponse > apiResponse = BaseResponse. < BookResponse > builder()
             .result(bookService.getById(id))
             .build();
         return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping
-    public ResponseEntity < ApiResponse < Void >> addBook(@Valid @RequestBody BookRequest book) {
+    @Operation(
+        summary = "Tạo mới một cuốn sách",
+        description = "Frontend truyền dữ liệu tên sách và giá vào Body. Hệ thống sẽ validate cú pháp trước khi lưu."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Tạo sách thành công"),
+        @ApiResponse(responseCode = "400", description = "Dữ liệu đầu vào sai validation cú pháp (Ví dụ: tên trống, giá âm)")
+    })
+    public ResponseEntity < BaseResponse < Void >> addBook(@Valid @RequestBody BookRequest book) {
         bookService.add(book);
-        ApiResponse <Void> apiResponse = ApiResponse.<Void>builder()
+        BaseResponse < Void > apiResponse = BaseResponse. < Void > builder()
             .build();
         return ResponseEntity.status(201).body(apiResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity < ApiResponse < BookResponse > > updateBook(@PathVariable Long id, @Valid @RequestBody BookRequest book) {
+    public ResponseEntity < BaseResponse < BookResponse > > updateBook(@PathVariable Long id, @Valid @RequestBody BookRequest book) {
 
-        ApiResponse <BookResponse> apiResponse = ApiResponse.<BookResponse>builder()
+        BaseResponse < BookResponse > apiResponse = BaseResponse. < BookResponse > builder()
             .result(bookService.update(id, book))
             .build();
         return ResponseEntity.ok(apiResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity < ApiResponse < Void >> deleteBook(@PathVariable Long id) {
+    public ResponseEntity < BaseResponse < Void >> deleteBook(@PathVariable Long id) {
         bookService.delete(id);
-        ApiResponse <Void> apiResponse = ApiResponse.<Void>builder()
+        BaseResponse < Void > apiResponse = BaseResponse. < Void > builder()
             .build();
         return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<BookResponse>>> search(@RequestParam(required = false) String name) {
-        List<BookResponse> books;
+    public ResponseEntity < BaseResponse < List < BookResponse >>> search(@RequestParam(required = false) String name) {
+        List < BookResponse > books;
         if (name == null || name.trim().isEmpty()) {
             books = bookService.getAll();
         } else {
             books = bookService.search(name);
         }
-        ApiResponse<List<BookResponse>> apiResponse = ApiResponse.<List<BookResponse>>builder()
+        BaseResponse < List < BookResponse >> apiResponse = BaseResponse. < List < BookResponse >> builder()
             .result(books)
             .build();
         return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/search-by-date")
-    public ResponseEntity<ApiResponse<List<BookResponse>>> searchByDateBetween(
-            @RequestParam LocalDate day1, 
-            @RequestParam LocalDate day2) {
-        List<BookResponse> books = bookService.getByDayCreatedBetween(day1, day2);
-        ApiResponse<List<BookResponse>> apiResponse = ApiResponse.<List<BookResponse>>builder()
+    public ResponseEntity < BaseResponse < List < BookResponse >>> searchByDateBetween(
+        @RequestParam LocalDate day1,
+        @RequestParam LocalDate day2) {
+        List < BookResponse > books = bookService.getByDayCreatedBetween(day1, day2);
+        BaseResponse < List < BookResponse >> apiResponse = BaseResponse. < List < BookResponse >> builder()
             .result(books)
             .build();
         return ResponseEntity.ok(apiResponse);
@@ -102,16 +124,16 @@ public class BookController {
 
     // API Phân trang: GET http://localhost:8080/api/books/page?page=0&size=5&sortBy=price&direction=desc
     @GetMapping("/page")
-    public ResponseEntity<ApiResponse<Page<BookResponse>>> getBooksWithPage(
+    public ResponseEntity < BaseResponse < Page < BookResponse >>> getBooksWithPage(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "5") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "asc") String direction) {
-    
-    ApiResponse<Page<BookResponse>> apiResponse = ApiResponse.<Page<BookResponse>>builder()
-        .result(bookService.getAllBooksWithPagination(page, size, sortBy, direction))
-        .build();
-    return ResponseEntity.ok(apiResponse);
+
+        BaseResponse < Page < BookResponse >> apiResponse = BaseResponse. < Page < BookResponse >> builder()
+            .result(bookService.getAllBooksWithPagination(page, size, sortBy, direction))
+            .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
 
