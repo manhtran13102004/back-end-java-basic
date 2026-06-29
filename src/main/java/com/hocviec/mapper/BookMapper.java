@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
-import com.hocviec.model.Book;
+import com.hocviec.entity.Book;
 @Component
 public class BookMapper {
     public BookMapper(){

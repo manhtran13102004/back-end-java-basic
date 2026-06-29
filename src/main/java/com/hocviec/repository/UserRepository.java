@@ -3,7 +3,7 @@ package com.hocviec.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hocviec.model.User;
+import com.hocviec.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

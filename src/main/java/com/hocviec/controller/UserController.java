@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hocviec.dto.BaseResponse;
 import com.hocviec.dto.UserRegisterRequest;
+import com.hocviec.dto.response.BaseResponse;
 import com.hocviec.service.UserService;
 
 import jakarta.validation.Valid;

@@ -22,7 +22,9 @@ public class SecurityConfig {
 
             // 2. Cấu hình phân quyền đường dẫn
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/api/users/register/**").permitAll()
+                .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/api/users/register"
+                        , "/api/auth/login"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
 

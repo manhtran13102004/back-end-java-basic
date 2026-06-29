@@ -1,4 +1,4 @@
-package com.hocviec.dto;
+package com.hocviec.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

@@ -1,4 +1,4 @@
-package com.hocviec.model;
+package com.hocviec.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

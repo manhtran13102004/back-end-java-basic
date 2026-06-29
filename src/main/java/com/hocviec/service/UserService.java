@@ -3,7 +3,7 @@ package com.hocviec.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.hocviec.dto.UserRegisterRequest;
-import com.hocviec.model.User;
+import com.hocviec.entity.User;
 import com.hocviec.repository.UserRepository;
 
 

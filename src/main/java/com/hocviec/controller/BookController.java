@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hocviec.dto.BaseResponse;
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
+import com.hocviec.dto.response.BaseResponse;
 import com.hocviec.service.BookService;
 
 import io.swagger.v3.oas.annotations.Operation;

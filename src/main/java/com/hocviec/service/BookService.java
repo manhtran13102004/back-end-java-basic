@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
+import com.hocviec.entity.Book;
 import com.hocviec.exception.ErrorCode;
 import com.hocviec.mapper.BookMapper;
-import com.hocviec.model.Book;
 import com.hocviec.repository.BookRepository;
 import com.hocviec.exception.AppException;
 
