@@ -1,22 +1,24 @@
 package com.hocviec.service;
 
-import com.hocviec.dto.request.LoginRequest;
-import com.hocviec.dto.response.LoginResponse;
-import com.hocviec.entity.User;
-import com.hocviec.repository.UserRepository;
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import com.hocviec.dto.request.LoginRequest;
+import com.hocviec.dto.response.LoginResponse;
+import com.hocviec.entity.User;
+import com.hocviec.repository.UserRepository;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSObject;
+import com.nimbusds.jose.Payload;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 @Service
 public class AuthenticationService {
