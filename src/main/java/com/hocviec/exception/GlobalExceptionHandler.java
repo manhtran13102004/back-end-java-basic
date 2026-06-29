@@ -1,6 +1,7 @@
 package com.hocviec.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,13 +14,16 @@ public class GlobalExceptionHandler {
     // 🔥 HÀM 1: Chuyên hứng lỗi Validation đầu vào (Mã lỗi 400)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
-        // Mặc định lấy lỗi đầu tiên tìm thấy
-        String enumKey = ex.getFieldError().getDefaultMessage();
+        // Mặc định lấy lỗi đầu tiên tìm thấy (an toàn nếu không có lỗi field)
+        FieldError fieldError = ex.getFieldError();
+        String enumKey = fieldError != null ? fieldError.getDefaultMessage() : null;
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
         
         try {
             // Đọc chuỗi tin nhắn để ánh xạ ngược lại Enum ErrorCode
-            errorCode = ErrorCode.valueOf(enumKey);
+            if (enumKey != null) {
+                errorCode = ErrorCode.valueOf(enumKey);
+            }
         } catch (IllegalArgumentException e) {
             // Giữ nguyên INVALID_KEY nếu không ánh xạ được
         }
