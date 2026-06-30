@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -34,13 +35,11 @@ public class SecurityConfig {
                         , "/api/auth/login"
                 ).permitAll()
                 .anyRequest().authenticated()
-            )
-
-            // 🌟 3. CẤU HÌNH JWT FILTER THAY CHO BASIC AUTH
-            // Spring Security sẽ tự động đứng chặn ở cửa, bốc Token từ Header lên rồi ném qua Bean JwtDecoder ở trên để check
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.decoder(jwtDecoder()))
             );
+
+            // 🌟 PHÉP THUẬT Ở ĐÂY: Tự tay chèn CustomJwtFilter của mình vào hệ thống
+        // Ra lệnh: Hãy chạy cái CustomJwtFilter này TRƯỚC KHI chạy cái bộ lọc UsernamePasswordAuthenticationFilter mặc định của Spring
+        http.addFilterBefore(new CustomJwtFilter(SIGNER_KEY), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
