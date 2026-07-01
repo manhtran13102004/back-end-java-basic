@@ -136,7 +136,7 @@ public class BookService {
 
                 String fileName = fileService.uploadFile(file);
 
-                book.setImgUrl(fileName);
+                book.setAvatarUrl(fileName);
 
                 bookRepository.save(book);
 
