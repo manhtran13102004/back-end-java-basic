@@ -9,7 +9,8 @@ public enum ErrorCode {
     BOOK_NAME_BLANK(1003, "Tên sách không được để trống", HttpStatus.BAD_REQUEST),
     BOOK_NAME_INVALID(1004, "Tên sách phải từ 2 đến 100 ký tự", HttpStatus.BAD_REQUEST),
     BOOK_PRICE_NULL(1005, "Giá không được để trống", HttpStatus.BAD_REQUEST),
-    BOOK_PRICE_INVALID(1006, "Giá phải lớn hơn 0", HttpStatus.BAD_REQUEST),UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa được phân loại", HttpStatus.INTERNAL_SERVER_ERROR)
+    BOOK_PRICE_INVALID(1006, "Giá phải lớn hơn 0", HttpStatus.BAD_REQUEST),UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa được phân loại", HttpStatus.INTERNAL_SERVER_ERROR),
+    FILE_NOT_EXISTED(1007, "File không tồn tại trên hệ thống", HttpStatus.NOT_FOUND)
     ;
 
     private final int code;
