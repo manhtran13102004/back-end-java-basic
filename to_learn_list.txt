@@ -20,7 +20,7 @@ Bài 19: Swagger test API có JWT
 Bài 20: Cài MinIO
 Bài 21: Upload file lên MinIO
 Bài 22: Lưu metadata file vào database
-Bài 23: Upload avatar cho student
+Bài 23: Upload avatar cho book
 Bài 24: Tách project thành nhiều service
 Bài 25: Feign cơ bản
 Bài 26: Xử lý lỗi khi gọi Feign

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hocviec.dto.BookRequest;
 import com.hocviec.dto.BookResponse;
@@ -136,5 +137,17 @@ public class BookController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @PostMapping("/{id}/uploadAvatar")
+    public ResponseEntity < BaseResponse < BookResponse >> uploadAvatar(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
 
-}
+        BaseResponse < BookResponse > response = BaseResponse. < BookResponse > builder()
+            .code(1000)
+            .message("Upload avatar thành công")
+            .result(bookService.uploadAvatar(id, file))
+            .build();
+
+                return ResponseEntity.ok(response);
+
+
+            }
+    }

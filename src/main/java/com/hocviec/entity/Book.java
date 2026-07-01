@@ -29,4 +29,5 @@ public class Book {
     private double price;
     private double priceImport;
     private LocalDate dayCreated;
+    private String imgUrl;
 }

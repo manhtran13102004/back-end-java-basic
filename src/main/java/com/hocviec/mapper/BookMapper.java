@@ -30,6 +30,7 @@ public class BookMapper {
         bookResponse.setPrice(book.getPrice());
         bookResponse.setPriceImport(book.getPriceImport());
         bookResponse.setDayCreated(book.getDayCreated());
+        bookResponse.setImgUrl(book.getImgUrl());
 
         return bookResponse;
     }
