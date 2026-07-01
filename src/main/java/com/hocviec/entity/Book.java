@@ -10,12 +10,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity // 🌟 1. Báo cho Spring Boot biết đây là một thực thể cần tạo bảng dưới DB
 @Table(name = "books") // 2. Đặt tên bảng dưới Database là "books" (nếu không viết dòng này, DB sẽ tự lấy tên class làm tên bảng)
 public class Book {
@@ -29,5 +32,7 @@ public class Book {
     private double price;
     private double priceImport;
     private LocalDate dayCreated;
-    private String imgUrl;
+
+    @Column(name = "avatar_url") // 6. Cấu hình tên cột trong DB là avatar_url (nếu không viết dòng này, DB sẽ tự lấy tên thuộc tính làm tên cột)
+    private String avatarUrl;
 }

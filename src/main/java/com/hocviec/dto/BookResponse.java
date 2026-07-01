@@ -32,7 +32,7 @@ public class BookResponse {
     @Schema(description = "Ngày tạo sách", example = "2023-01-01") // 🌟 Ví dụ mẫu
     private LocalDate dayCreated;
 
-    @Schema(description = "Đường dẫn hình ảnh của sách", example = "https://example.com/image.jpg") // 🌟 Ví dụ mẫ
-    private String imgUrl;
+    @Schema(description = "Đường dẫn hình ảnh của sách", example = "03f56e18-393c-4fe3-a56f-89feb0bfd902.jpg") // 🌟 Ví dụ mẫ
+    private String avatarUrl;
 
 }
