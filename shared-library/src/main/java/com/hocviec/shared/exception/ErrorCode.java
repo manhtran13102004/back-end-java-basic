@@ -4,14 +4,17 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
     // Định nghĩa các mã lỗi (Mã lỗi, Tin nhắn mặc định, HTTP Status tương ứng)
-    INVALID_KEY(1001, "Mã lỗi không hợp lệ", HttpStatus.BAD_REQUEST),
-    BOOK_NOT_EXISTED(1002, "Cuốn sách này không tồn tại trên hệ thống", HttpStatus.NOT_FOUND),
-    BOOK_NAME_BLANK(1003, "Tên sách không được để trống", HttpStatus.BAD_REQUEST),
-    BOOK_NAME_INVALID(1004, "Tên sách phải từ 2 đến 100 ký tự", HttpStatus.BAD_REQUEST),
-    BOOK_PRICE_NULL(1005, "Giá không được để trống", HttpStatus.BAD_REQUEST),
-    BOOK_PRICE_INVALID(1006, "Giá phải lớn hơn 0", HttpStatus.BAD_REQUEST),UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa được phân loại", HttpStatus.INTERNAL_SERVER_ERROR),
-    FILE_NOT_EXISTED(1007, "File không tồn tại trên hệ thống", HttpStatus.NOT_FOUND),
-    USER_NOT_EXISTED(1008, "Người dùng không tồn tại trên hệ thống", HttpStatus.NOT_FOUND)
+    UNCATEGORIZED_EXCEPTION(9999, "Lỗi hệ thống chưa được phân loại", HttpStatus.INTERNAL_SERVER_ERROR),
+    USER_NOT_EXISTED(1001, "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
+    USER_ALREADY_EXISTS(1002, "Người dùng đã tồn tại", HttpStatus.CONFLICT),
+    BOOK_ALREADY_EXISTS(2000, "Cuốn sách này đã tồn tại trên hệ thống", HttpStatus.CONFLICT),
+    BOOK_NOT_EXISTED(2001, "Cuốn sách này không tồn tại trên hệ thống", HttpStatus.NOT_FOUND),
+    INVALID_KEY(4001, "Dữ liệu đầu vào không hợp lệ", HttpStatus.BAD_REQUEST),
+    
+    // 🌟 MÃ LỖI CỦA FILE SERVICE ĐƯỢC ĐẶT TẠI ĐÂY ĐỂ TOÀN HỆ THỐNG DÙNG CHUNG
+    FILE_TOO_LARGE(3001, "File quá lớn! Dung lượng tối đa cho phép là 70KB.", HttpStatus.BAD_REQUEST),
+    FILE_EMPTY(3002, "File không được để trống.", HttpStatus.BAD_REQUEST),
+    FILE_NOT_EXISTED(3003, "File không tồn tại trên hệ thống.", HttpStatus.NOT_FOUND)
     ;
 
     private final int code;

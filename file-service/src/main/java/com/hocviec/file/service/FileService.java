@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hocviec.file.entity.File_Metadata;
+import com.hocviec.file.repository.FileMetadataRepository;
 import com.hocviec.shared.exception.AppException;
 import com.hocviec.shared.exception.ErrorCode;
-import com.hocviec.file.repository.FileMetadataRepository;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -34,7 +34,21 @@ public class FileService {
     }
 
     public String uploadFile(MultipartFile file) {
+       
+       
+        long maxFileSize = 70 * 1024; 
+
+        if (file.getSize() > maxFileSize) {
+            // 🌟 Ném AppException có sẵn của bạn bên Shared Library
+            // Nếu chưa có mã FILE_TOO_LARGE, bạn có thể dùng tạm một ErrorCode bất kỳ hoặc bổ sung vào enum
+            throw new AppException(ErrorCode.FILE_TOO_LARGE);
+        }
+        
         try {
+
+            
+
+
             // 1. Tạo một cái tên file ngẫu nhiên (UUID) để không bao giờ bị trùng đè file cũ
             String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
             String fileName = UUID.randomUUID().toString() + extension;
