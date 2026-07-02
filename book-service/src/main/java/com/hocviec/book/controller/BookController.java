@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hocviec.book.dto.request.BookRequest;
 import com.hocviec.book.dto.response.BookResponse;
-import com.hocviec.shared.dto.response.BaseResponse;
 import com.hocviec.book.service.BookService;
+import com.hocviec.shared.dto.response.BaseResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -150,4 +150,17 @@ public class BookController {
 
 
     //         }
+
+    @PostMapping("/{id}/uploadAvatar")
+    public ResponseEntity<BaseResponse<BookResponse>> updateBookWithAvatar(@RequestParam("file") MultipartFile file, @PathVariable Long id) {
+        BaseResponse<BookResponse> response = BaseResponse.<BookResponse>builder()
+            .code(1000)
+            .result(bookService.updateBookWithAvatar(id, file))
+            .message("Cập nhật avatar cho sách thành công")
+            .build();
+        
+
+        return ResponseEntity.ok(response);
     }
+
+}

@@ -12,6 +12,8 @@ import com.hocviec.auth.dto.request.LoginRequest;
 import com.hocviec.auth.dto.response.LoginResponse;
 import com.hocviec.auth.entity.User;
 import com.hocviec.auth.repository.UserRepository;
+import com.hocviec.shared.exception.AppException;
+import com.hocviec.shared.exception.ErrorCode;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -38,14 +40,14 @@ public class AuthenticationService {
         // 1. Tìm user trong DB theo username
         User user = userRepository.findByUsername(request.getUsername());
         if (user == null) {
-            throw new RuntimeException("Tài khoản không tồn tại");
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
 
         // 2. Đối chiếu mật khẩu thô gửi lên với mật khẩu đã băm trong DB
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         
         if (!authenticated) {
-            throw new RuntimeException("Sai mật khẩu");
+            throw new AppException(ErrorCode.INVALID_KEY);
         }
 
         // 3. Nếu đúng mật khẩu -> Tiến hành tạo JWT Token
@@ -81,7 +83,7 @@ public class AuthenticationService {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize(); // Xuất ra chuỗi String JWT dạng: xxxxx.yyyyy.zzzzz
         } catch (JOSEException e) {
-            throw new RuntimeException("Không thể tạo Token", e);
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
     }
 }

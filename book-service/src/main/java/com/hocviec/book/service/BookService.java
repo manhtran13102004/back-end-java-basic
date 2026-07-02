@@ -9,12 +9,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.hocviec.book.client.FileClient;
 import com.hocviec.book.dto.request.BookRequest;
 import com.hocviec.book.dto.response.BookResponse;
 import com.hocviec.book.entity.Book;
 import com.hocviec.book.mapper.BookMapper;
 import com.hocviec.book.repository.BookRepository;
+import com.hocviec.shared.dto.response.BaseResponse;
 import com.hocviec.shared.exception.AppException;
 import com.hocviec.shared.exception.ErrorCode;
 
@@ -24,12 +27,12 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final FileClient fileClient;
 
-
-    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository, BookMapper bookMapper, FileClient fileClient) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
-
+        this.fileClient = fileClient;
     }
 
     public List < BookResponse > getAll() {
@@ -141,5 +144,23 @@ public class BookService {
 
     //     return bookMapper.toBookResponse(book);
     // }
+
+    public BookResponse updateBookWithAvatar(Long id, MultipartFile avatarFile) {
+        
+        Book book = bookRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.BOOK_NOT_EXISTED));
+
+        // 1. Thực hiện "gọi điện thoại" sang cổng 8082 để up file
+        BaseResponse<String> fileResponse = fileClient.uploadFile(avatarFile);
+        
+        // 2. Nhận kết quả tên file trả về từ File-Service
+        String fileNameGenerated = fileResponse.getResult();
+        
+
+        book.setAvatarUrl(fileNameGenerated);
+        bookRepository.save(book);
+
+        return bookMapper.toBookResponse(book);
+    }
 
 }
